@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>周末城市探索 · 指南</title>
+  <!-- 使用 Inter 字体，清爽现代 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (免费图标) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f7f9fc;
+      color: #1e293b;
+      padding: 1.5rem 1rem 3rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .app-container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* 头部 */
+    .header {
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0f172a, #334155);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header h1 i {
+      background: #3b82f6;
+      color: white;
+      font-size: 1.6rem;
+      padding: 0.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px -6px rgba(59, 130, 246, 0.4);
+    }
+
+    .weather-chip {
+      background: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 500;
+      border: 1px solid #e2e8f0;
+      backdrop-filter: blur(4px);
+    }
+
+    .weather-chip i {
+      font-size: 1.3rem;
+      color: #f59e0b;
+    }
+
+    /* 筛选栏 */
+    .filters {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem 1.5rem 1rem 1.5rem;
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2.5rem;
+      border: 1px solid #eef2f6;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 1.5rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1 1 160px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-group select, .filter-group input {
+      padding: 0.8rem 1rem;
+      border-radius: 16px;
+      border: 1.5px solid #e2e8f0;
+      background: #ffffff;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      color: #0f172a;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .filter-group select:hover, .filter-group input:hover {
+      border-color: #94a3b8;
+    }
+
+    .filter-group select:focus, .filter-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .budget-display {
+      font-weight: 600;
+      color: #0f172a;
+      background: #f1f5f9;
+      padding: 0.4rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1.5px solid #e2e8f0;
+      padding: 0.8rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reset-btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    /* 活动卡片网格 */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+    }
+
+    .section-title h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .section-title span {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .activity-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.08);
+      transition: all 0.25s ease;
+      border: 1px solid #edf2f7;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.15);
+      border-color: #dbeafe;
+    }
+
+    .card-img {
+      height: 140px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 1rem;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1e293b;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .card-content {
+      padding: 1.2rem 1.2rem 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-content h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #0f172a;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 1rem;
+      margin: 0.7rem 0 1rem;
+      font-size: 0.85rem;
+      color: #475569;
+    }
+
+    .meta i {
+      width: 18px;
+      color: #3b82f6;
+      font-size: 0.9rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.8rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .budget-badge {
+      background: #eef2ff;
+      color: #4338ca;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+
+    .btn-icon:hover {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .btn-icon.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-text {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      padding: 0.5rem 1.1rem;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-text:hover {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+    }
+
+    /* 组队/打卡面板 */
+    .bottom-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .panel-card {
+      background: white;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #edf2f7;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+    }
+
+    .panel-header i {
+      font-size: 1.3rem;
+      color: #3b82f6;
+      background: #eef2ff;
+      padding: 0.5rem;
+      border-radius: 14px;
+    }
+
+    .panel-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .team-list, .checkin-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .team-list li, .checkin-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      padding: 0.7rem 1rem;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .member-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar {
+      background: #cbd5e1;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .empty-message {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem 0;
+      font-style: italic;
+    }
+
+    .add-btn {
+      background: #f1f5f9;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .add-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1.5rem;
+    }
+
+    /* 响应式 */
+    @media (max-width: 700px) {
+      .filters {
+        padding: 1.2rem;
+      }
+      .bottom-panel {
+        grid-template-columns: 1fr;
+      }
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* 自定义滚动条 */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- 头部 + 天气模拟 -->
+  <div class="header">
+    <h1>
+      <i class="fas fa-compass"></i> 周末城市探索
+    </h1>
+    <div class="weather-chip">
+      <i class="fas fa-sun"></i> 23°C · 晴 · 微风
+    </div>
+  </div>
+
+  <!-- 筛选区 -->
+  <div class="filters">
+    <div class="filter-group">
+      <label><i class="fas fa-heart" style="color: #ef4444;"></i> 偏好</label>
+      <select id="preferenceSelect">
+        <option value="all">全部活动</option>
+        <option value="展览">展览 · 艺术</option>
+        <option value="市集">市集 · 手作</option>
+        <option value="演出">演出 · 音乐</option>
+        <option value="徒步">短途徒步</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label><i class="fas fa-cloud-sun"></i> 天气适应</label>
+      <select id="weatherSelect">
+        <option value="any">不限天气</option>
+        <option value="indoor">室内为主</option>
+        <option value="outdoor">户外为主</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label><i class="fas fa-coins"></i> 预算 (¥) <span id="budgetValue" class="budget-display">0-300</span></label>
+      <input type="range" id="budgetRange" min="0" max="300" value="300" step="10">
+    </div>
+    <button class="reset-btn" id="resetFilters"><i class="fas fa-rotate-left"></i> 重置</button>
+  </div>
+
+  <!-- 推荐活动区 -->
+  <div class="section-title">
+    <h2><i class="fas fa-map-pin" style="margin-right: 8px; color: #3b82f6;"></i>今日推荐</h2>
+    <span id="resultCount">4个活动</span>
+  </div>
+
+  <div id="activityGrid" class="cards-grid">
+    <!-- 活动卡片由 JS 动态渲染，避免重复 -->
+  </div>
+
+  <!-- 组队出发 & 打卡记录 双面板 -->
+  <div class="bottom-panel">
+    <!-- 组队出发 -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <i class="fas fa-users"></i>
+        <h3>组队出发</h3>
+      </div>
+      <ul id="teamList" class="team-list">
+        <li class="empty-message">还没有队友，邀请朋友一起吧</li>
+      </ul>
+      <button class="add-btn" id="inviteBtn"><i class="fas fa-user-plus"></i> 邀请队友</button>
+    </div>
+
+    <!-- 打卡记录 -->
+    <div class="panel-card">
+      <div class="panel-header">
+        <i class="fas fa-check-circle" style="color: #10b981; background: #ecfdf5;"></i>
+        <h3>打卡记录</h3>
+      </div>
+      <ul id="checkinList" class="checkin-list">
+        <li class="empty-message">还没有打卡记录，去参加活动吧</li>
+      </ul>
+      <button class="add-btn" id="checkinBtn"><i class="fas fa-camera"></i> 打卡最新活动</button>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    <i class="fas fa-robot"></i> 根据你的偏好 · 天气 · 预算智能推荐 · 组队探索城市
+  </div>
+</div>
+
+<script>
+  (function(){
+    // ---------- 活动数据 (模拟本地活动，包含所有筛选维度) ----------
+    const activities = [
+      {
+        id: 'a1',
+        title: '设计博物馆 · 未来生活展',
+        type: '展览',
+        indoor: true,
+        outdoor: false,
+        cost: 60,
+        duration: '2-3h',
+        location: '市中心艺术区',
+        // 用于视觉展示的渐变色/图片占位
+        color: 'linear-gradient(145deg, #dbeafe, #bfdbfe)',
+        icon: 'fa-palette',
+        // 天气友好度 (室内不受天气影响，但作为筛选字段)
+      },
+      {
+        id: 'a2',
+        title: '周末创意市集 · 手作与咖啡',
+        type: '市集',
+        indoor: false,
+        outdoor: true,
+        cost: 0,
+        duration: '1-2h',
+        location: '滨江公园',
+        color: 'linear-gradient(145deg, #fef3c7, #fde68a)',
+        icon: 'fa-store',
+      },
+      {
+        id: 'a3',
+        title: 'Livehouse 独立乐队之夜',
+        type: '演出',
+        indoor: true,
+        outdoor: false,
+        cost: 120,
+        duration: '3h',
+        location: '城西音乐厅',
+        color: 'linear-gradient(145deg, #e9d5ff, #d8b4fe)',
+        icon: 'fa-music',
+      },
+      {
+        id: 'a4',
+        title: '北山轻徒步 · 秋日森林',
+        type: '徒步',
+        indoor: false,
+        outdoor: true,
+        cost: 30,
+        duration: '4h',
+        location: '北山步道',
+        color: 'linear-gradient(145deg, #d1fae5, #a7f3d0)',
+        icon: 'fa-mountain',
+      },
+      {
+        id: 'a5',
+        title: '沉浸式光影艺术展',
+        type: '展览',
+        indoor: true,
+        outdoor: false,
+        cost: 90,
+        duration: '2h',
+        location: '文创园',
+        color: 'linear-gradient(145deg, #c7d2fe, #a5b4fc)',
+        icon: 'fa-camera-retro',
+      },
+      {
+        id: 'a6',
+        title: '农夫市集 · 有机生活',
+        type: '市集',
+        indoor: false,
+        outdoor: true,
+        cost: 20,
+        duration: '2h',
+        location: '老码头广场',
+        color: 'linear-gradient(145deg, #fef9c3, #fef08a)',
+        icon: 'fa-carrot',
+      }
+    ];
+
+    // 状态
+    let currentPreference = 'all';
+    let currentWeather = 'any';
+    let maxBudget = 300;
+
+    // 组队数据
+    let teamMembers = [];  // 存储名字
+
+    // 打卡记录
+    let checkinRecords = []; // 存储活动标题或字符串
+
+    // DOM 元素
+    const activityGrid = document.getElementById('activityGrid');
+    const resultCount = document.getElementById('resultCount');
+    const preferenceSelect = document.getElementById('preferenceSelect');
+    const weatherSelect = document.getElementById('weatherSelect');
+    const budgetRange = document.getElementById('budgetRange');
+    const budgetValue = document.getElementById('budgetValue');
+    const resetBtn = document.getElementById('resetFilters');
+    const teamListEl = document.getElementById('teamList');
+    const checkinListEl = document.getElementById('checkinList');
+    const inviteBtn = document.getElementById('inviteBtn');
+    const checkinBtn = document.getElementById('checkinBtn');
+
+    // ---------- 工具函数 ----------
+    function formatBudget(value) {
+      return `¥${value}`;
+    }
+
+    // 更新预算显示
+    function updateBudgetDisplay() {
+      budgetValue.textContent = `0-${maxBudget}`;
+    }
+
+    // 根据筛选条件过滤活动
+    function filterActivities() {
+      return activities.filter(act => {
+        // 偏好筛选
+        if (currentPreference !== 'all' && act.type !== currentPreference) return false;
+        // 天气筛选: indoor / outdoor / any
+        if (currentWeather === 'indoor' && !act.indoor) return false;
+        if (currentWeather === 'outdoor' && !act.outdoor) return false;
+        // 预算
+        if (act.cost > maxBudget) return false;
+        return true;
+      });
+    }
+
+    // 渲染活动卡片
+    function renderActivities() {
+      const filtered = filterActivities();
+      resultCount.textContent = `${filtered.length}个活动`;
+
+      if (filtered.length === 0) {
+        activityGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; background: white; border-radius: 24px; color: #64748b; border: 1px dashed #cbd5e1;">
+          <i class="fas fa-map" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+          <p>没有符合当前筛选的活动，试试调整条件吧</p>
+        </div>`;
+        return;
+      }
+
+      activityGrid.innerHTML = filtered.map(act => {
+        // 检查是否已打卡
+        const isCheckedIn = checkinRecords.includes(act.title);
+        return `
+          <div class="activity-card" data-id="${act.id}">
+            <div class="card-img" style="background: ${act.color};">
+              <span class="tag"><i class="fas ${act.icon}" style="margin-right: 5px;"></i>${act.type}</span>
+            </div>
+            <div class="card-content">
+              <h3>${act.title}</h3>
+              <div class="meta">
+                <span class="meta-item"><i class="fas fa-location-dot"></i> ${act.location}</span>
+                <span class="meta-item"><i class="fas fa-clock"></i> ${act.duration}</span>
+              </div>
+              <div class="card-actions">
+                <span class="budget-badge"><i class="fas fa-tag"></i> ${act.cost === 0 ? '免费' : '¥' + act.cost}</span>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn-icon checkin-btn ${isCheckedIn ? 'active' : ''}" data-title="${act.title}" title="打卡这个活动">
+                    <i class="fas ${isCheckedIn ? 'fa-check' : 'fa-camera'}"></i>
+                  </button>
+                  <button class="btn-icon join-btn" data-title="${act.title}" title="组队参加">
+                    <i class="fas fa-user-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 为卡片内的按钮绑定事件 (事件委托也可，但重新渲染后直接绑定更简单)
+      document.querySelectorAll('.checkin-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = btn.dataset.title;
+          handleCheckin(title);
+        });
+      });
+
+      document.querySelectorAll('.join-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = btn.dataset.title;
+          handleQuickJoin(title);
+        });
+      });
+    }
+
+    // 处理打卡 (从卡片按钮触发)
+    function handleCheckin(title) {
+      if (checkinRecords.includes(title)) {
+        // 如果已打卡，提示重复 (简单alert，但更优雅可以加toast，这里保持轻量)
+        alert(`「${title}」已经打卡过啦！`);
+        return;
+      }
+      checkinRecords.push(title);
+      renderCheckinList();
+      // 同时更新卡片按钮状态
+      renderActivities(); // 重新渲染以更新按钮激活样式
+      // 可选提示
+    }
+
+    // 快速组队 (从卡片按钮加入)
+    function handleQuickJoin(title) {
+      const defaultName = `探索者${Math.floor(Math.random()*100)}`;
+      if (teamMembers.length >= 5) {
+        alert('队伍最多5人，不能再多啦～');
+        return;
+      }
+      // 避免完全重复名字，但随机名字可以重复，无所谓
+      teamMembers.push({ name: defaultName, activity: title });
+      renderTeamList();
+    }
+
+    // 渲染组队列表
+    function renderTeamList() {
+      if (teamMembers.length === 0) {
+        teamListEl.innerHTML = `<li class="empty-message">还没有队友，邀请朋友一起吧</li>`;
+        return;
+      }
+      teamListEl.innerHTML = teamMembers.map((member, index) => {
+        const initials = member.name.slice(0, 2).toUpperCase();
+        return `<li>
+          <div class="member-badge">
+            <span class="avatar">${initials}</span>
+            <span>${member.name}</span>
+          </div>
+          <span style="font-size: 0.75rem; color: #3b82f6; background: #eef2ff; padding: 0.2rem 0.7rem; border-radius: 30px;">${member.activity ? member.activity : '周末探索'}</span>
+        </li>`;
+      }).join('');
+    }
+
+    // 渲染打卡记录列表
+    function renderCheckinList() {
+      if (checkinRecords.length === 0) {
+        checkinListEl.innerHTML = `<li class="empty-message">还没有打卡记录，去参加活动吧</li>`;
+        return;
+      }
+      checkinListEl.innerHTML = checkinRecords.map((record, idx) => {
+        return `<li>
+          <span><i class="fas fa-check-circle" style="color: #10b981; margin-right: 8px;"></i>${record}</span>
+          <span style="font-size: 0.75rem; color: #64748b;">${new Date().toLocaleDateString('zh-CN', {month:'short', day:'numeric'})}</span>
+        </li>`;
+      }).join('');
+    }
+
+    // 重置所有筛选条件
+    function resetFilters() {
+      preferenceSelect.value = 'all';
+      weatherSelect.value = 'any';
+      budgetRange.value = 300;
+      maxBudget = 300;
+      currentPreference = 'all';
+      currentWeather = 'any';
+      updateBudgetDisplay();
+      renderActivities();
+    }
+
+    // 更新筛选状态并重新渲染
+    function updateFilters() {
+      currentPreference = preferenceSelect.value;
+      currentWeather = weatherSelect.value;
+      maxBudget = Number(budgetRange.value);
+      updateBudgetDisplay();
+      renderActivities();
+    }
+
+    // ---------- 事件绑定 ----------
+    preferenceSelect.addEventListener('change', updateFilters);
+    weatherSelect.addEventListener('change', updateFilters);
+    budgetRange.addEventListener('input', () => {
+      maxBudget = Number(budgetRange.value);
+      updateBudgetDisplay();
+      // 实时渲染
+      renderActivities();
+    });
+
+    resetBtn.addEventListener('click', resetFilters);
+
+    // 邀请队友 (弹窗输入名字)
+    inviteBtn.addEventListener('click', () => {
+      if (teamMembers.length >= 5) {
+        alert('队伍已满5人，不能再邀请啦～');
+        return;
+      }
+      const name = prompt('输入队友名字 (或昵称)', `朋友${teamMembers.length+1}`);
+      if (name && name.trim()) {
+        // 可以选择一个默认活动，这里让用户自己决定，但简单起见直接加
+        teamMembers.push({ name: name.trim(), activity: '周末探索' });
+        renderTeamList();
+      }
+    });
+
+    // 打卡最新活动 (弹窗选择或自定义)
+    checkinBtn.addEventListener('click', () => {
+      // 从当前筛选出的活动里选一个，或者手动输入
+      const filtered = filterActivities();
+      let title;
+      if (filtered.length > 0) {
+        // 简单弹窗让用户选择
+        const options = filtered.map((a, i) => `${i+1}. ${a.title}`).join('\n');
+        const choice = prompt(`选择要打卡的活动 (输入序号):\n${options}`, '1');
+        if (choice) {
+          const idx = parseInt(choice) - 1;
+          if (idx >= 0 && idx < filtered.length) {
+            title = filtered[idx].title;
+          }
+        }
+      } else {
+        title = prompt('输入你参加的活动名称', '城市漫步');
+      }
+      if (title && title.trim()) {
+        if (checkinRecords.includes(title.trim())) {
+          alert(`「${title}」已经打过卡啦`);
+          return;
+        }
+        checkinRecords.push(title.trim());
+        renderCheckinList();
+        renderActivities(); // 刷新卡片状态
+      }
+    });
+
+    // 初始化渲染
+    function init() {
+      updateBudgetDisplay();
+      renderActivities();
+      renderTeamList();
+      renderCheckinList();
+    }
+
+    init();
+  })();
+</script>
+</body>
+</html>
